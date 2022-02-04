@@ -1,0 +1,25 @@
+#!/bin/bash
+machines=( campion coppola bigelow hitchcock )
+RED='\033[0;31m'
+GREEN='\032[0;31m'
+
+if [ $# -ge 1 ]
+then
+    while getopts m: flag
+        do
+            case "${flag}" in
+            m) machine=${OPTARG};;
+            h) echo "-m str machine-name";;
+            *) echo "bad arg, use '-m machine-name'";;
+        esac
+    done
+    ssh "$USER"@"$machine" nvidia-smi --query-gpu=name,memory.free,utilization.memory --format=csv
+else
+    for i in "${machines[@]}"
+    do 
+        echo "Machine: $i"
+        echo " ------"
+        ssh "$USER"@"$i" nvidia-smi --query-gpu=name,memory.free,utilization.memory --format=csv
+        echo "-------"
+    done
+fi

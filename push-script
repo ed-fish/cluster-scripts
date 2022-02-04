@@ -1,0 +1,37 @@
+#!/bin/bash
+
+################################################################################
+# Help                                                                         #
+################################################################################
+Help()
+{
+   # Display Help
+   echo "Push your scripts to all GPU servers"
+   echo "Currently you need to be in the same folder as the file you are pushing"
+   echo
+   echo "Syntax: push-script [-f|h]"
+   echo "options:"
+   echo "f     The file you want to push"
+   echo "h     Print this Help."
+   echo
+}
+
+#################################################################################
+machines=( coppola campion bigelow hitchcock )
+
+while getopts ":f:h" opt; do
+        case ${opt} in
+        f) filepath=${OPTARG};;
+        h) Help
+           exit;;
+        \?) echo "ERROR: Invalid option"
+            Help
+            exit;;
+    esac
+done
+
+for i in "${machines[@]}"
+do
+    scp "$filepath" "$USER"@"$i":
+    ssh -t "$USER"@"$i" "sudo mv $filepath /usr/local/bin/; sudo chmod a+x /usr/local/bin/$filepath"
+done

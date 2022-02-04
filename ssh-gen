@@ -1,0 +1,10 @@
+#!/bin/bash
+
+machines=( coppola campion bigelow hitchcock )
+
+ssh-keygen
+
+for i in "${machines[@]}"
+do
+    ssh-copy-id -i ~/.ssh/id_rsa.pub $i
+done
